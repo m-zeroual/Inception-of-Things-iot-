@@ -1,0 +1,51 @@
+servers = {
+  first: {
+    hostname: "mzeroualS",
+    ip: "192.168.56.110",
+    cpus: 2,
+    memory: 2048,
+    provision: "scripts/provisionS.sh"
+  },
+
+  second: {
+    hostname: "mzeroualSW",
+    ip: "192.168.56.111",
+    cpus: 2,
+    memory: 2048,
+    provision: "scripts/provisionSW.sh"
+  }
+}
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/jammy64"
+
+  # First machine
+  config.vm.define servers[:first][:hostname] do |vm|
+    vm.vm.hostname = servers[:first][:hostname]
+    vm.vm.network "private_network", ip: servers[:first][:ip]
+
+    vm.vm.provider "virtualbox" do |vb|
+      vb.name = servers[:first][:hostname]
+      vb.cpus = servers[:first][:cpus]
+      vb.memory = servers[:first][:memory]
+    end
+
+    vm.vm.provision "shell",
+      path: servers[:first][:provision]
+  end
+
+  # Second machine
+  config.vm.define servers[:second][:hostname] do |vm|
+    vm.vm.hostname = servers[:second][:hostname]
+    vm.vm.network "private_network", ip: servers[:second][:ip]
+
+    vm.vm.provider "virtualbox" do |vb|
+      vb.name = servers[:second][:hostname]
+      vb.cpus = servers[:second][:cpus]
+      vb.memory = servers[:second][:memory]
+    end
+
+    vm.vm.provision "shell",
+      path: servers[:second][:provision]
+  end
+end
