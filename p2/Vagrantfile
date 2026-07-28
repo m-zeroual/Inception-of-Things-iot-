@@ -1,0 +1,31 @@
+server = {
+  hostname: "dokokoS",
+  ip: "192.168.56.110",
+  cpus: 2,
+  memory: 2048,
+  provision: {
+    script: "scripts/install_k3s.sh",
+    deploy: "scripts/deploy.sh"
+  }
+}
+
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "ubuntu/jammy64"
+  config.vm.synced_folder "./", "/home/vagrant/deploy"
+
+  config.vm.define server[:hostname] do |vm|
+    vm.vm.hostname = server[:hostname]
+    vm.vm.network "private_network", ip: server[:ip]
+
+    vm.vm.provider "virtualbox" do |vb|
+      vb.cpus = server[:cpus]
+      vb.memory = server[:memory]
+      vb.name = server[:hostname]
+    end
+
+    vm.vm.provision "shell", path: server[:provision][:script]
+    vm.vm.provision "shell", path: server[:provision][:deploy]
+  end
+
+end
