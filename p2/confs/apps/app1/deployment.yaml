@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app1-deployment
+  name: app1-deployment
+spec:
+  template:
+    metadata:
+      labels:
+        app: app1
+    spec:
+      containers:
+      - image: mzeroual/myapp:v1.0
+        name: app1-container
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app1
