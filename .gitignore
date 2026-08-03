@@ -1,3 +1,3 @@
 .vagrant
-confs/dockerfile
-confs/nginx.conf
+**/dockerfile
+**/nginx.conf
